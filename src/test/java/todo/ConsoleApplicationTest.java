@@ -23,7 +23,7 @@ public class ConsoleApplicationTest {
     @BeforeEach
     void setUp() throws IOException {
         setUpStreams();
-        startToApp();
+        startTodoApp();
     }
 
     @AfterEach
@@ -86,7 +86,7 @@ public class ConsoleApplicationTest {
         System.setOut(new PrintStream(stdout));
     }
 
-    private void startToApp() {
+    private void startTodoApp() {
         Thread thread = new Thread(() -> ConsoleApplication.main(new String[0]));
         thread.start();
         todoThread = thread;
