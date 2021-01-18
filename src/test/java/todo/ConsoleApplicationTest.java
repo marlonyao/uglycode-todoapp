@@ -32,11 +32,6 @@ public class ConsoleApplicationTest {
         stopTodoApp();
     }
 
-    private void tearDownStreams() throws IOException {
-        restoreStdIO();
-        closeIO();
-    }
-
     @Test
     public void todoApp() throws Exception {
         // 1. add todo
@@ -97,6 +92,11 @@ public class ConsoleApplicationTest {
         in.close();
         stdin.close();
         stdout.close();
+    }
+
+    private void tearDownStreams() throws IOException {
+        restoreStdIO();
+        closeIO();
     }
 
     private void restoreStdIO() {
