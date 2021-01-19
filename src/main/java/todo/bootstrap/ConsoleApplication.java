@@ -129,8 +129,8 @@ public class ConsoleApplication {
         }
 
         private String formatItem(Item item) {
-            String done = item.isDone() ? " [Done] " : "";
-            return item.getId() + "." + done + item.getTodo();
+            String done = item.isDone() ? "[Done] " : "";
+            return item.getId() + ". " + done + item.getTodo();
         }
     }
 }
