@@ -3,7 +3,7 @@ package todo.adapter.out;
 import com.google.common.base.Charsets;
 import todo.domain.Item;
 import todo.domain.ItemNotFoundException;
-import todo.domain.PersistException;
+import todo.domain.RepositoryException;
 import todo.port.out.ItemRepository;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public class FileSystemItemRepository implements ItemRepository {
                 memoryItems.add(parseItem(line));
             }
         } catch (IOException e) {
-            throw new PersistException(String.format("Fail to load file [%s]", dbFile), e);
+            throw new RepositoryException(String.format("Fail to load file [%s]", dbFile), e);
         }
     }
 
@@ -70,7 +70,7 @@ public class FileSystemItemRepository implements ItemRepository {
                 fout.write(String.format("%s,%s,%s\n", item.getId(), item.isDone(), item.getTodo()).getBytes());
             }
         } catch (IOException e) {
-            throw new PersistException(String.format("Fail to persist items to file [%s]", dbFile), e);
+            throw new RepositoryException(String.format("Fail to persist items to file [%s]", dbFile), e);
         }
     }
 
