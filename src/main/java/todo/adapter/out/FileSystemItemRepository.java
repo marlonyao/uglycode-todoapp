@@ -1,31 +1,31 @@
 package todo.adapter.out;
 
-import com.google.common.base.Charsets;
 import todo.domain.Item;
 import todo.domain.ItemNotFoundException;
 import todo.domain.RepositoryException;
 import todo.port.out.ItemRepository;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.lang.Integer.parseInt;
+import static utils.FileUtils.*;
 
 public class FileSystemItemRepository implements ItemRepository {
     private MemoryItemRepository memoryItems = new MemoryItemRepository();
     private File dbFile;
 
     public FileSystemItemRepository(File dbFile) {
-        this.dbFile = dbFile;
-        if (!this.dbFile.exists()) {
-            this.dbFile.getAbsoluteFile().getParentFile().mkdirs();
-        } else {
-            load();
+        try {
+            this.dbFile = dbFile;
+            makeParentDirsIfNecessary(this.dbFile);
+            doLoad();
+        } catch (IOException e) {
+            throw new RepositoryException(e);
         }
     }
 
@@ -38,14 +38,11 @@ public class FileSystemItemRepository implements ItemRepository {
         return memoryItems.findAll();
     }
 
-    private void load() {
-        try {
-            for (String line : Files.readAllLines(dbFile.toPath(), Charsets.UTF_8)) {
-                memoryItems.add(parseItem(line));
-            }
-        } catch (IOException e) {
-            throw new RepositoryException(String.format("Fail to load file [%s]", dbFile), e);
+    private void doLoad() throws IOException {
+        if (!dbFile.exists()) {
+            return;
         }
+        readLines(dbFile).forEach(line -> memoryItems.add(parseItem(line)));
     }
 
     private Item parseItem(String line) {
@@ -65,13 +62,17 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     private void persist() {
-        try (FileOutputStream fout = new FileOutputStream(dbFile, false)) {
-            for (Item item : memoryItems.findAll()) {
-                fout.write(String.format("%s,%s,%s\n", item.getId(), item.isDone(), item.getTodo()).getBytes());
-            }
+        List<String> lines = memoryItems.findAll().stream().map(this::formatItem)
+                .collect(Collectors.toList());
+        try {
+            writeLines(dbFile, lines);
         } catch (IOException e) {
-            throw new RepositoryException(String.format("Fail to persist items to file [%s]", dbFile), e);
+            throw new RepositoryException(e);
         }
+    }
+
+    private String formatItem(Item item) {
+        return String.format("%s,%s,%s", item.getId(), item.isDone(), item.getTodo());
     }
 
     @Override
