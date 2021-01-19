@@ -123,9 +123,14 @@ public class ConsoleApplication {
         void execute() {
             List<Item> items = listTodoUseCase.list(withAll);
             for (Item item : items) {
-                System.out.printf("%s. %s%n", item.getId(), item.getTodo());
+                System.out.println(formatItem(item));
             }
             System.out.printf("Total: %s items%n", items.size());
+        }
+
+        private String formatItem(Item item) {
+            String done = item.isDone() ? " [Done] " : "";
+            return item.getId() + "." + done + item.getTodo();
         }
     }
 }

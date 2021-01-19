@@ -53,7 +53,7 @@ public class ConsoleApplicationTest {
         assertInteract("todo list\n", "2. <item2>\nTotal: 1 items\n");
 
         // 4. view all todos
-        assertInteract("todo list --all\n", "1. <item>\n2. <item2>\nTotal: 2 items\n");
+        assertInteract("todo list --all\n", "1. [Done] <item>\n2. <item2>\nTotal: 2 items\n");
 
         assertInteract("foobar\n", "", "Unknown command [foobar]\n");
     }
