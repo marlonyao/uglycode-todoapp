@@ -2,18 +2,16 @@ package todo.bootstrap;
 
 import com.google.common.annotations.VisibleForTesting;
 import todo.adapter.out.FileSystemItemRepository;
-import todo.adapter.out.MemoryItemRepository;
-import todo.domain.Item;
-import todo.port.out.ItemRepository;
-import todo.port.in.AddTodoUseCase;
-import todo.port.in.CompleteTodoUseCase;
-import todo.port.in.ListTodoUseCase;
 import todo.application.AddTodoUseCaseImpl;
 import todo.application.CompleteTodoUseCaseImpl;
 import todo.application.ListTodoUseCaseImpl;
+import todo.domain.Item;
+import todo.port.in.AddTodoUseCase;
+import todo.port.in.CompleteTodoUseCase;
+import todo.port.in.ListTodoUseCase;
+import todo.port.out.ItemRepository;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Scanner;
 
