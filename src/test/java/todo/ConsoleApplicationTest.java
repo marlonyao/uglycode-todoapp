@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.bootstrap.ConsoleApplication;
-import todo.domain.Item;
+import todo.domain.item.Item;
 
 import java.io.*;
 

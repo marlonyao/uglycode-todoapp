@@ -1,7 +1,7 @@
 package todo.adapter.out;
 
-import todo.domain.User;
-import todo.domain.UserNotFoundException;
+import todo.domain.login.User;
+import todo.domain.login.UserNotFoundException;
 import todo.port.out.UserRepository;
 
 import java.util.ArrayList;

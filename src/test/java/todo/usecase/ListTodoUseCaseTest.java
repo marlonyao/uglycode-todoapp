@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.port.in.ListTodoUseCase;
 import todo.application.ListTodoUseCaseImpl;
-import todo.domain.Item;
+import todo.domain.item.Item;
 
 import java.util.List;
 

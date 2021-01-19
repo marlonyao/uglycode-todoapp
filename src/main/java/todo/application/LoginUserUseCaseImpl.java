@@ -1,15 +1,16 @@
 package todo.application;
 
-import todo.domain.User;
-import todo.domain.UserLoginException;
-import todo.domain.UserNotFoundException;
+import todo.domain.login.LoginSession;
+import todo.domain.login.User;
+import todo.domain.login.UserLoginException;
+import todo.domain.login.UserNotFoundException;
 import todo.port.in.LoginUserUseCase;
 import todo.port.out.UserRepository;
 
-public class LoginUserCaseImpl implements LoginUserUseCase {
+public class LoginUserUseCaseImpl implements LoginUserUseCase {
     private UserRepository userRepository;
 
-    public LoginUserCaseImpl(UserRepository userRepository) {
+    public LoginUserUseCaseImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -17,6 +18,7 @@ public class LoginUserCaseImpl implements LoginUserUseCase {
     public int login(String username, String password) {
         User user = findUser(username);
         user.authenticate(password);
+        LoginSession.switchTo(user);
         return user.getId();
     }
 

@@ -5,7 +5,7 @@ import todo.adapter.out.FileSystemItemRepository;
 import todo.application.AddTodoUseCaseImpl;
 import todo.application.CompleteTodoUseCaseImpl;
 import todo.application.ListTodoUseCaseImpl;
-import todo.domain.Item;
+import todo.domain.item.Item;
 import todo.port.in.AddTodoUseCase;
 import todo.port.in.CompleteTodoUseCase;
 import todo.port.in.ListTodoUseCase;

@@ -1,4 +1,4 @@
-package todo.domain;
+package todo.domain.item;
 
 public class ItemNotFoundException extends RuntimeException {
     public ItemNotFoundException(int itemId) {

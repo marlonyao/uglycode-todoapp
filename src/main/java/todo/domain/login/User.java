@@ -1,4 +1,4 @@
-package todo.domain;
+package todo.domain.login;
 
 public class User {
     private final int userId;

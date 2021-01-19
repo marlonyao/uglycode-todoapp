@@ -1,4 +1,4 @@
-package todo.domain;
+package todo.domain.login;
 
 public class UserLoginException extends RuntimeException {
     public UserLoginException(String message) {

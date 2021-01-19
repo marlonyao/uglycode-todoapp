@@ -1,7 +1,7 @@
 package todo.adapter.out;
 
-import todo.domain.Item;
-import todo.domain.ItemNotFoundException;
+import todo.domain.item.Item;
+import todo.domain.item.ItemNotFoundException;
 import todo.domain.RepositoryException;
 import todo.port.out.ItemRepository;
 

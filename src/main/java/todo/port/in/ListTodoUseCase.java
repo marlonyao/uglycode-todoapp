@@ -1,6 +1,6 @@
 package todo.port.in;
 
-import todo.domain.Item;
+import todo.domain.item.Item;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package todo.domain;
+package todo.domain.item;
 
 
 import com.google.common.annotations.VisibleForTesting;

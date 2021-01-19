@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.port.in.CompleteTodoUseCase;
 import todo.application.CompleteTodoUseCaseImpl;
-import todo.domain.Item;
-import todo.domain.ItemNotFoundException;
+import todo.domain.item.Item;
+import todo.domain.item.ItemNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

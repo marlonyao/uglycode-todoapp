@@ -1,7 +1,7 @@
 package todo.adapter.out;
 
 import org.junit.jupiter.api.Test;
-import todo.domain.UserNotFoundException;
+import todo.domain.login.UserNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

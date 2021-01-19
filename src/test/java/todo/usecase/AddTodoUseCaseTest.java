@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.application.AddTodoUseCaseImpl;
-import todo.domain.Item;
+import todo.domain.item.Item;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,7 +1,7 @@
 package todo.port.out;
 
-import todo.domain.Item;
-import todo.domain.ItemNotFoundException;
+import todo.domain.item.Item;
+import todo.domain.item.ItemNotFoundException;
 
 import java.util.List;
 
