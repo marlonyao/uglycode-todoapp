@@ -30,8 +30,18 @@ public class ConsoleApplication {
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
+            processCmdline(line);
+        }
+    }
+
+    private static void processCmdline(String line) {
+        try {
             Command cmd = parseCommand(line);
             cmd.execute();
+        } catch (InvalidCommandException e) {
+            System.err.println(e.getMessage());
+        } catch (Throwable e) {
+            System.err.println("Execute error: " + e.getMessage());
         }
     }
 
@@ -62,7 +72,7 @@ public class ConsoleApplication {
         if (line.trim().equals("todo list --all")) {
             return new ListTodoCommand(true);
         }
-        throw new IllegalArgumentException("Unknown command [" + line + "]");
+        throw new InvalidCommandException("Unknown command [" + line + "]");
     }
 
     public static ItemRepository getItemRepository() {

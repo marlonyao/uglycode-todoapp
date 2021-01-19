@@ -13,12 +13,15 @@ import java.io.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConsoleApplicationTest {
-    private PipedOutputStream out;
+    private PipedOutputStream stdinWriter;
     private PipedInputStream stdin;
-    private PipedInputStream in;
+    private PipedInputStream stdoutReader;
     private PipedOutputStream stdout;
+    private PipedInputStream stderrReader;
+    private PipedOutputStream stderr;
     private InputStream originStdin;
     private PrintStream originStdout;
+    private PrintStream originStderr;
     private Thread todoThread;
 
     @BeforeEach
@@ -51,35 +54,52 @@ public class ConsoleApplicationTest {
 
         // 4. view all todos
         assertInteract("todo list --all\n", "1. <item>\n2. <item2>\nTotal: 2 items\n");
+
+        assertInteract("foobar\n", "", "Unknown command [foobar]\n");
     }
 
     private void assertInteract(String input, String output) throws IOException, InterruptedException {
-        out.write(input.getBytes());
-        out.flush();
+        assertInteract(input, output, "");
+    }
+
+    private void assertInteract(String input, String output, String errorOutput) throws IOException, InterruptedException {
+        stdinWriter.write(input.getBytes());
+        stdinWriter.flush();
 
         Thread.sleep(100);
 
-        byte[] outBytes = new byte[in.available()];
-        in.read(outBytes);
+        byte[] outBytes = new byte[stdoutReader.available()];
+        stdoutReader.read(outBytes);
         assertThat(new String(outBytes)).isEqualTo(output);
+
+        byte[] errBytes = new byte[stderrReader.available()];
+        stderrReader.read(errBytes);
+        assertThat(new String(errBytes)).isEqualTo(errorOutput);
     }
 
     private void setUpStreams() throws IOException {
-        out = new PipedOutputStream();
+        stdinWriter = new PipedOutputStream();
         stdin = new PipedInputStream();
         stdout = new PipedOutputStream();
-        in = new PipedInputStream();
+        stdoutReader = new PipedInputStream();
+        stderr = new PipedOutputStream();
+        stderrReader = new PipedInputStream();
 
         redirectStdIO();
     }
 
     private void redirectStdIO() throws IOException {
+        // pipe stream 安排：stdinWriter -> stdin -> [program] -> stdout -> stdoutReader
+        //                                                    -> stderr -> stderrReader
         originStdin = System.in;
         originStdout = System.out;
-        out.connect(stdin);
-        stdout.connect(in);
+        originStderr = System.err;
+        stdinWriter.connect(stdin);
+        stdout.connect(stdoutReader);
+        stderr.connect(stderrReader);
         System.setIn(stdin);
         System.setOut(new PrintStream(stdout));
+        System.setErr(new PrintStream(stderr));
     }
 
     private void startTodoApp() {
@@ -90,10 +110,12 @@ public class ConsoleApplicationTest {
     }
 
     private void closeIO() throws IOException {
-        out.close();
-        in.close();
+        stdinWriter.close();
+        stdoutReader.close();
+        stderrReader.close();
         stdin.close();
         stdout.close();
+        stderr.close();
     }
 
     private void tearDownStreams() throws IOException {
@@ -104,6 +126,7 @@ public class ConsoleApplicationTest {
     private void restoreStdIO() {
         System.setIn(originStdin);
         System.setOut(originStdout);
+        System.setErr(originStderr);
     }
 
     private void stopTodoApp() throws InterruptedException {
