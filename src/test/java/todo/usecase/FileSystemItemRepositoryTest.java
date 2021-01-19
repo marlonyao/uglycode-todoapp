@@ -1,4 +1,4 @@
-package todo;
+package todo.usecase;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;

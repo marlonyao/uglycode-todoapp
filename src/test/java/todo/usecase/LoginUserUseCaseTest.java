@@ -1,4 +1,4 @@
-package todo;
+package todo.usecase;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
