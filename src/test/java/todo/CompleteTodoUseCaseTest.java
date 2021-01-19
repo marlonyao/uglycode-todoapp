@@ -2,7 +2,7 @@ package todo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import todo.adapter.out.FakeItemRepository;
+import todo.adapter.out.MemoryItemRepository;
 import todo.port.in.CompleteTodoUseCase;
 import todo.application.CompleteTodoUseCaseImpl;
 import todo.domain.Item;
@@ -12,12 +12,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CompleteTodoUseCaseTest {
-    private FakeItemRepository itemRepository;
+    private MemoryItemRepository itemRepository;
     private CompleteTodoUseCase todoUseCase;
 
     @BeforeEach
     void setUp() {
-        itemRepository = new FakeItemRepository();
+        itemRepository = new MemoryItemRepository();
         todoUseCase = new CompleteTodoUseCaseImpl(itemRepository);
     }
 

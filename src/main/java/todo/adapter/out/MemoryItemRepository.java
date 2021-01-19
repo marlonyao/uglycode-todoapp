@@ -7,7 +7,7 @@ import todo.port.out.ItemRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FakeItemRepository implements ItemRepository {
+public class MemoryItemRepository implements ItemRepository {
     private List<Item> items = new ArrayList<>();
 
     @Override

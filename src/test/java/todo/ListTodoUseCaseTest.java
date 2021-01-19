@@ -3,7 +3,7 @@ package todo;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import todo.adapter.out.FakeItemRepository;
+import todo.adapter.out.MemoryItemRepository;
 import todo.port.in.ListTodoUseCase;
 import todo.application.ListTodoUseCaseImpl;
 import todo.domain.Item;
@@ -13,12 +13,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ListTodoUseCaseTest {
-    private FakeItemRepository itemRepository;
+    private MemoryItemRepository itemRepository;
     private ListTodoUseCase todoUseCase;
 
     @BeforeEach
     void setUp() {
-        itemRepository = new FakeItemRepository();
+        itemRepository = new MemoryItemRepository();
         itemRepository.add(new Item(1, "<item1>"));
         itemRepository.add(new Item(2, "<item2>", true));
         todoUseCase = new ListTodoUseCaseImpl(itemRepository);

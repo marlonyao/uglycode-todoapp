@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import todo.adapter.out.MemoryItemRepository;
 import todo.bootstrap.ConsoleApplication;
 import todo.domain.Item;
 
@@ -82,6 +83,7 @@ public class ConsoleApplicationTest {
     }
 
     private void startTodoApp() {
+        ConsoleApplication.initItemRepository(new MemoryItemRepository());
         Thread thread = new Thread(() -> ConsoleApplication.main(new String[0]));
         thread.start();
         todoThread = thread;

@@ -1,6 +1,8 @@
 package todo.bootstrap;
 
-import todo.adapter.out.FakeItemRepository;
+import com.google.common.annotations.VisibleForTesting;
+import todo.adapter.out.FileSystemItemRepository;
+import todo.adapter.out.MemoryItemRepository;
 import todo.domain.Item;
 import todo.port.out.ItemRepository;
 import todo.port.in.AddTodoUseCase;
@@ -10,6 +12,8 @@ import todo.application.AddTodoUseCaseImpl;
 import todo.application.CompleteTodoUseCaseImpl;
 import todo.application.ListTodoUseCaseImpl;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Scanner;
 
@@ -33,8 +37,15 @@ public class ConsoleApplication {
         }
     }
 
+    @VisibleForTesting
+    public static void initItemRepository(ItemRepository itemRepository) {
+        ConsoleApplication.itemRepository = itemRepository;
+    }
+
     private static void assembleApplication() {
-        itemRepository = new FakeItemRepository();
+        if (itemRepository == null) {
+            itemRepository = new FileSystemItemRepository(new File("todo.txt"));
+        }
         addTodoUseCase = new AddTodoUseCaseImpl(itemRepository);
         completeTodoUseCase = new CompleteTodoUseCaseImpl(itemRepository);
         listTodoUseCase = new ListTodoUseCaseImpl(itemRepository);
