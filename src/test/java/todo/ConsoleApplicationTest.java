@@ -59,7 +59,7 @@ public class ConsoleApplicationTest {
             // 1. add todo
             assertInteract("todo add <item>\n", "1. <item>\nItem <1> added\n");
             assertThat(ConsoleApplication.getItemRepository().findAll()).isEqualTo(ImmutableList.of(
-                    createItem(1, "<item>")
+                    new Item(UserSession.currentUserId(), 1, "<item>")
             ));
             assertInteract("todo add <item2>\n", "2. <item2>\nItem <2> added\n");
 
@@ -76,9 +76,6 @@ public class ConsoleApplicationTest {
             assertInteract("foobar\n", "", "Unknown command [foobar]\n");
         }
 
-        private Item createItem(int itemId, String todo) {
-            return new Item(itemId, UserSession.currentUserId(), todo);
-        }
     }
 
     private void assertInteract(String input, String output) throws IOException, InterruptedException {

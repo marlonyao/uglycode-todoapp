@@ -1,7 +1,6 @@
 package todo.adapter.out;
 
 import todo.domain.item.Item;
-import todo.domain.item.ItemNotFoundException;
 import todo.domain.RepositoryException;
 import todo.port.out.ItemRepository;
 
@@ -47,7 +46,7 @@ public class FileSystemItemRepository implements ItemRepository {
 
     private Item parseItem(String line) {
         String[] parts = line.split(",", 4);
-        return new Item(parseInt(parts[1]), parseInt(parts[0]), parts[3], parseBoolean(parts[2]));
+        return new Item(parseInt(parts[0]), parseInt(parts[1]), parts[3], parseBoolean(parts[2]));
     }
 
     @Override
@@ -82,7 +81,7 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     private String formatItem(Item item) {
-        return String.format("%s,%s,%s,%s", item.getUserId(), item.getId(), item.isDone(), item.getTodo());
+        return String.format("%s,%s,%s,%s", item.getUserId(), item.getSeq(), item.isDone(), item.getTodo());
     }
 
     @Override
@@ -96,7 +95,7 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item findByUserIdAndSeq(int userId, int todoId) {
-        return memoryItems.findByUserIdAndSeq(userId, todoId);
+    public Item findByUserIdAndSeq(int userId, int todoSeq) {
+        return memoryItems.findByUserIdAndSeq(userId, todoSeq);
     }
 }

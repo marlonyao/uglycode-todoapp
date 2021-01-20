@@ -34,7 +34,7 @@ public class CompleteTodoUseCaseTest {
 
         @Test
         public void itemExists() {
-            itemRepository.add(createItem(1, "<item1>"));
+            itemRepository.add(new Item(userId, 1, "<item1>"));
             todoUseCase.complete(userId, 1);
             assertThat(itemRepository.findByUserIdAndSeq(userId, 1).isDone()).isEqualTo(true);
         }
@@ -43,24 +43,21 @@ public class CompleteTodoUseCaseTest {
         public void itemNotExists() {
             assertThatThrownBy(() -> todoUseCase.complete(userId, 1))
                     .isInstanceOf(ItemNotFoundException.class)
-                    .hasMessage("Item not found: userId=[111], itemId=[1]");
+                    .hasMessage("Item not found: userId=[111], itemSeq=[1]");
         }
 
-        private Item createItem(int itemId, String todo) {
-            return new Item(itemId, userId, todo);
-        }
     }
 
     @Nested
     class MultiUser {
         @Test
         public void complete() {
-            itemRepository.add(new Item(1, 111, "<item1>"));
-            itemRepository.add(new Item(1, 222, "<item2>"));
+            itemRepository.add(new Item(111, 1, "<item1>"));
+            itemRepository.add(new Item(222, 1, "<item2>"));
             todoUseCase.complete(222, 1);
             assertThat(itemRepository.findAll()).isEqualTo(ImmutableList.of(
-                    new Item(1, 111, "<item1>", false),
-                    new Item(1, 222, "<item2>", true)
+                    new Item(111, 1, "<item1>", false),
+                    new Item(222, 1, "<item2>", true)
             ));
         }
     }

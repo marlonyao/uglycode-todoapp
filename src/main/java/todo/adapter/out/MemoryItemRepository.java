@@ -17,7 +17,7 @@ public class MemoryItemRepository implements ItemRepository {
 
     @Override
     public void add(Item item) {
-        int itemIndex = findIndex(item.getUserId(), item.getId());
+        int itemIndex = findIndex(item.getUserId(), item.getSeq());
         if (itemIndex < 0) {
             items.add(item.copy());
             return;
@@ -28,7 +28,7 @@ public class MemoryItemRepository implements ItemRepository {
     private int findIndex(int userId, int itemId) {
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
-            if (item.getUserId() == userId && item.getId() == itemId) {
+            if (item.getUserId() == userId && item.getSeq() == itemId) {
                 return i;
             }
         }
@@ -46,10 +46,10 @@ public class MemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item findByUserIdAndSeq(int userId, int todoId) {
-        int itemIndex = findIndex(userId, todoId);
+    public Item findByUserIdAndSeq(int userId, int todoSeq) {
+        int itemIndex = findIndex(userId, todoSeq);
         if (itemIndex < 0) {
-            throw new ItemNotFoundException(userId, todoId);
+            throw new ItemNotFoundException(userId, todoSeq);
         }
         return items.get(itemIndex).copy();
     }

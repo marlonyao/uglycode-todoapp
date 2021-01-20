@@ -20,5 +20,5 @@ public interface ItemRepository {
 
     int countByUserId(int userId);
 
-    Item findByUserIdAndSeq(int userId, int todoId);
+    Item findByUserIdAndSeq(int userId, int todoSeq);
 }

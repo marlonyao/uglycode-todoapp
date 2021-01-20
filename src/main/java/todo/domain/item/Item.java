@@ -8,37 +8,24 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class Item {
-    private final int id;
     private int userId;
+    private final int seq;
     private final String todo;
     private boolean done;
 
-    public Item(int id, String todo) {
-        this.id = id;
-        this.todo = todo;
-    }
-
-    public Item(int id, int userId, String todo) {
-        this.id = id;
+    public Item(int userId, int seq, String todo) {
+        this.seq = seq;
         this.userId = userId;
         this.todo = todo;
     }
 
-    @VisibleForTesting
-    public Item(int id, String todo, boolean done) {
-        this(id, todo);
+    public Item(int userId, int seq, String todo, boolean done) {
+        this(userId, seq, todo);
         this.done = done;
     }
 
-    @VisibleForTesting
-    public Item(int id, int userId, String todo, boolean done) {
-        this(id, todo);
-        this.userId = userId;
-        this.done = done;
-    }
-
-    public int getId() {
-        return id;
+    public int getSeq() {
+        return seq;
     }
 
     public String getTodo() {
@@ -55,7 +42,7 @@ public class Item {
 
     @VisibleForTesting
     public Item copy() {
-        return new Item(id, userId, todo, done);
+        return new Item(userId, seq, todo, done);
     }
 
     public int getUserId() {

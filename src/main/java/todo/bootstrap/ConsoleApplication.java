@@ -94,22 +94,22 @@ public class ConsoleApplication {
         @Override
         void execute() {
             Item item = addTodoUseCase.addItem(UserSession.currentUserId(), todo);
-            System.out.printf("%s. %s%n", item.getId(), item.getTodo());
-            System.out.printf("Item <%s> added%n", item.getId());
+            System.out.printf("%s. %s%n", item.getSeq(), item.getTodo());
+            System.out.printf("Item <%s> added%n", item.getSeq());
         }
     }
 
     private static class DoneCommand extends Command {
-        private int itemId;
+        private int itemSeq;
 
-        public DoneCommand(int itemId) {
-            this.itemId = itemId;
+        public DoneCommand(int itemSeq) {
+            this.itemSeq = itemSeq;
         }
 
         @Override
         void execute() {
-            completeTodoUseCase.complete(UserSession.currentUserId(), itemId);
-            System.out.printf("item <%s> done.%n", itemId);
+            completeTodoUseCase.complete(UserSession.currentUserId(), itemSeq);
+            System.out.printf("item <%s> done.%n", itemSeq);
         }
     }
 
@@ -131,7 +131,7 @@ public class ConsoleApplication {
 
         private String formatItem(Item item) {
             String done = item.isDone() ? "[Done] " : "";
-            return item.getId() + ". " + done + item.getTodo();
+            return item.getSeq() + ". " + done + item.getTodo();
         }
     }
 }

@@ -36,8 +36,8 @@ public class FileSystemItemRepositoryTest {
 
     @Test
     public void add() throws IOException {
-        repository.add(new Item(1, 111, "<item1>"));
-        repository.add(new Item(1, 222, "<item2>"));
+        repository.add(new Item(111, 1, "<item1>"));
+        repository.add(new Item(222, 1, "<item2>"));
 
         List<String> content = Files.readLines(dbfile.toFile(), Charsets.UTF_8);
         assertThat(content)
@@ -48,8 +48,8 @@ public class FileSystemItemRepositoryTest {
 
     @Test
     public void update() throws IOException {
-        repository.add(new Item(1, 111, "<item1>"));
-        repository.add(new Item(1, 111, "<item11>"));
+        repository.add(new Item(111, 1, "<item1>"));
+        repository.add(new Item(111, 1, "<item11>"));
         List<String> content = Files.readLines(dbfile.toFile(), Charsets.UTF_8);
         assertThat(content)
                 .hasSize(1)
@@ -66,20 +66,20 @@ public class FileSystemItemRepositoryTest {
         repository = new FileSystemItemRepository(dbfile);
 
         assertThat(repository.findByUserId(111)).isEqualTo(ImmutableList.of(
-                new Item(1,111, "<item1>")
+                new Item(111, 1, "<item1>")
         ));
 
         assertThat(repository.findByUserId(222)).isEqualTo(ImmutableList.of(
-                new Item(1, 222, "<item21>"),
-                new Item(2, 222, "<item22>", true)
+                new Item(222, 1, "<item21>"),
+                new Item(222, 2, "<item22>", true)
         ));
         assertThat(repository.countByUserId(222)).isEqualTo(2);
         assertThat(repository.findByUserIdAndSeq(222, 1)).isEqualTo(
-                new Item(1, 222, "<item21>")
+                new Item(222, 1, "<item21>")
         );
 
         assertThat(repository.findByUserIdAndUndone(222)).isEqualTo(ImmutableList.of(
-                new Item(1, 222, "<item21>")
+                new Item(222, 1, "<item21>")
         ));
     }
 }
