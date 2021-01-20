@@ -20,4 +20,5 @@ public interface ItemRepository {
 
     Item findById(int itemId) throws ItemNotFoundException;
 
+    Item findByUserIdAndSeq(int userId, int todoId);
 }

@@ -87,11 +87,18 @@ public class FileSystemItemRepository implements ItemRepository {
 
     @Override
     public int countByUserId(int userId) {
+        // TODO: 2021/1/21  
         return 0;
     }
 
     @Override
     public Item findById(int itemId) throws ItemNotFoundException {
         return memoryItems.findById(itemId);
+    }
+
+    @Override
+    public Item findByUserIdAndSeq(int userId, int todoId) {
+        // TODO: 2021/1/21  
+        return null;
     }
 }

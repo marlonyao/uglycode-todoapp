@@ -1,6 +1,8 @@
 package todo.usecase.item;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.port.in.CompleteTodoUseCase;
@@ -21,17 +23,45 @@ public class CompleteTodoUseCaseTest {
         todoUseCase = new CompleteTodoUseCaseImpl(itemRepository);
     }
 
-    @Test
-    public void itemExists() {
-        itemRepository.add(new Item(1, "<item1>"));
-        todoUseCase.complete(1);
-        assertThat(itemRepository.findById(1).isDone()).isEqualTo(true);
+    @Nested
+    class SingleUser {
+        private int userId;
+
+        @BeforeEach
+        void setUp() {
+            userId = 111;
+        }
+
+        @Test
+        public void itemExists() {
+            itemRepository.add(createItem(1, "<item1>"));
+            todoUseCase.complete(userId, 1);
+            assertThat(itemRepository.findById(1).isDone()).isEqualTo(true);
+        }
+
+        @Test
+        public void itemNotExists() {
+            assertThatThrownBy(() -> todoUseCase.complete(userId, 1))
+                    .isInstanceOf(ItemNotFoundException.class)
+                    .hasMessage("Item with id <1> not found");
+        }
+
+        private Item createItem(int itemId, String todo) {
+            return new Item(itemId, userId, todo);
+        }
     }
 
-    @Test
-    public void itemNotExists() {
-        assertThatThrownBy(() -> todoUseCase.complete(1))
-                .isInstanceOf(ItemNotFoundException.class)
-                .hasMessage("Item with id <1> not found");
+    @Nested
+    class MultiUser {
+        @Test
+        public void complete() {
+            itemRepository.add(new Item(1, 111, "<item1>"));
+            itemRepository.add(new Item(1, 222, "<item2>"));
+            todoUseCase.complete(222, 1);
+            assertThat(itemRepository.findAll()).isEqualTo(ImmutableList.of(
+                    new Item(1, 111, "<item1>", false),
+                    new Item(1, 222, "<item2>", true)
+            ));
+        }
     }
 }

@@ -17,7 +17,7 @@ public class MemoryItemRepository implements ItemRepository {
 
     @Override
     public void add(Item item) {
-        int itemIndex = findIndex(item.getId());
+        int itemIndex = findIndex(item.getUserId(), item.getId());
         if (itemIndex < 0) {
             items.add(item.copy());
             return;
@@ -25,9 +25,21 @@ public class MemoryItemRepository implements ItemRepository {
         items.set(itemIndex, item.copy());
     }
 
-    private int findIndex(int itemId) {
+    private int findIndex(int userId, int itemId) {
         for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getId() == itemId) {
+            Item item = items.get(i);
+            if (item.getUserId() == userId && item.getId() == itemId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // TODO: 2021/1/21 要去掉
+    private int oldFindIndex(int itemId) {
+        for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            if (item.getId() == itemId) {
                 return i;
             }
         }
@@ -46,9 +58,19 @@ public class MemoryItemRepository implements ItemRepository {
 
     @Override
     public Item findById(int itemId) throws ItemNotFoundException {
-        int itemIndex = findIndex(itemId);
+        int itemIndex = oldFindIndex(itemId);
         if (itemIndex < 0) {
             throw new ItemNotFoundException(itemId);
+        }
+        return items.get(itemIndex).copy();
+    }
+
+    @Override
+    public Item findByUserIdAndSeq(int userId, int todoId) {
+        int itemIndex = findIndex(userId, todoId);
+        if (itemIndex < 0) {
+            // TODO: 2021/1/21 异常要传userId
+            throw new ItemNotFoundException(todoId);
         }
         return items.get(itemIndex).copy();
     }

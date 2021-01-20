@@ -108,7 +108,7 @@ public class ConsoleApplication {
 
         @Override
         void execute() {
-            completeTodoUseCase.complete(itemId);
+            completeTodoUseCase.complete(UserSession.currentUserId(), itemId);
             System.out.printf("item <%s> done.%n", itemId);
         }
     }

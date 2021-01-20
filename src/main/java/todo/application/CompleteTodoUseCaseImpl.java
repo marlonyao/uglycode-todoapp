@@ -12,8 +12,8 @@ public class CompleteTodoUseCaseImpl implements CompleteTodoUseCase {
     }
 
     @Override
-    public void complete(int todoId) {
-        Item item = itemRepository.findById(todoId);
+    public void complete(int userId, int todoId) {
+        Item item = itemRepository.findByUserIdAndSeq(userId, todoId);
         item.complete();
         itemRepository.add(item);
     }
