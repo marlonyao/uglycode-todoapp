@@ -1,9 +1,8 @@
 package todo.application;
 
 import todo.domain.item.Item;
-import todo.domain.login.UserSession;
-import todo.port.out.ItemRepository;
 import todo.port.in.AddTodoUseCase;
+import todo.port.out.ItemRepository;
 
 public class AddTodoUseCaseImpl implements AddTodoUseCase {
     private ItemRepository itemRepository;
@@ -13,15 +12,9 @@ public class AddTodoUseCaseImpl implements AddTodoUseCase {
     }
 
     @Override
-    public Item addItem(String todo) {
-        Item item;
-        if (UserSession.isLogin()) {
-            int itemId = itemRepository.findByUserId(UserSession.currentUserId()).size() + 1;
-            item = new Item(itemId, UserSession.currentUserId(), todo);
-        } else {
-            int itemId = itemRepository.count() + 1;
-            item = new Item(itemId, todo);
-        }
+    public Item addItem(int userId, String todo) {
+        int itemId = itemRepository.countByUserId(userId) + 1;
+        Item item = new Item(itemId, userId, todo);
         itemRepository.add(item);
         return item;
     }

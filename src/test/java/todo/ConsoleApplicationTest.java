@@ -3,10 +3,12 @@ package todo;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.bootstrap.ConsoleApplication;
 import todo.domain.item.Item;
+import todo.domain.login.UserSession;
 
 import java.io.*;
 
@@ -36,26 +38,43 @@ public class ConsoleApplicationTest {
         stopTodoApp();
     }
 
-    @Test
-    public void todoApp() throws Exception {
-        // 1. add todo
-        assertInteract("todo add <item>\n", "1. <item>\nItem <1> added\n");
-        assertThat(ConsoleApplication.getItemRepository().findAll()).isEqualTo(ImmutableList.of(
-                new Item(1, "<item>")
-        ));
-        assertInteract("todo add <item2>\n", "2. <item2>\nItem <2> added\n");
+    @Nested
+    public class SingleUser {
+        @BeforeEach
+        void setUp() {
+            UserSession.changeCurrentUserId(111);
+        }
 
-        // 2. mark todo as done
-        assertInteract("todo done 1\n", "item <1> done.\n");
-        assertThat(ConsoleApplication.getItemRepository().findById(1).isDone()).isTrue();
+        @AfterEach
+        void tearDown() {
+            UserSession.logout();
+        }
 
-        // 3. view undone todos
-        assertInteract("todo list\n", "2. <item2>\nTotal: 1 items\n");
+        @Test
+        public void todoApp() throws Exception {
+            // 1. add todo
+            assertInteract("todo add <item>\n", "1. <item>\nItem <1> added\n");
+            assertThat(ConsoleApplication.getItemRepository().findAll()).isEqualTo(ImmutableList.of(
+                    createItem(1, "<item>")
+            ));
+            assertInteract("todo add <item2>\n", "2. <item2>\nItem <2> added\n");
 
-        // 4. view all todos
-        assertInteract("todo list --all\n", "1. [Done] <item>\n2. <item2>\nTotal: 2 items\n");
+            // 2. mark todo as done
+            assertInteract("todo done 1\n", "item <1> done.\n");
+            assertThat(ConsoleApplication.getItemRepository().findById(1).isDone()).isTrue();
 
-        assertInteract("foobar\n", "", "Unknown command [foobar]\n");
+            // 3. view undone todos
+            assertInteract("todo list\n", "2. <item2>\nTotal: 1 items\n");
+
+            // 4. view all todos
+            assertInteract("todo list --all\n", "1. [Done] <item>\n2. <item2>\nTotal: 2 items\n");
+
+            assertInteract("foobar\n", "", "Unknown command [foobar]\n");
+        }
+
+        private Item createItem(int itemId, String todo) {
+            return new Item(itemId, UserSession.currentUserId(), todo);
+        }
     }
 
     private void assertInteract(String input, String output) throws IOException, InterruptedException {

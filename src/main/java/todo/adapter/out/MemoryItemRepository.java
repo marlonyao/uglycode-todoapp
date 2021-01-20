@@ -40,6 +40,11 @@ public class MemoryItemRepository implements ItemRepository {
     }
 
     @Override
+    public int countByUserId(int userId) {
+        return findByUserId(userId).size();
+    }
+
+    @Override
     public Item findById(int itemId) throws ItemNotFoundException {
         int itemIndex = findIndex(itemId);
         if (itemIndex < 0) {

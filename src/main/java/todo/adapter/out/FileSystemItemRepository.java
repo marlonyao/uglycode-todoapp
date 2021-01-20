@@ -86,6 +86,11 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     @Override
+    public int countByUserId(int userId) {
+        return 0;
+    }
+
+    @Override
     public Item findById(int itemId) throws ItemNotFoundException {
         return memoryItems.findById(itemId);
     }

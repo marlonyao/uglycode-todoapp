@@ -16,6 +16,8 @@ public interface ItemRepository {
 
     int count();
 
+    int countByUserId(int userId);
+
     Item findById(int itemId) throws ItemNotFoundException;
 
 }

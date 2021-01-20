@@ -6,6 +6,7 @@ import todo.application.AddTodoUseCaseImpl;
 import todo.application.CompleteTodoUseCaseImpl;
 import todo.application.ListTodoUseCaseImpl;
 import todo.domain.item.Item;
+import todo.domain.login.UserSession;
 import todo.port.in.AddTodoUseCase;
 import todo.port.in.CompleteTodoUseCase;
 import todo.port.in.ListTodoUseCase;
@@ -92,7 +93,7 @@ public class ConsoleApplication {
 
         @Override
         void execute() {
-            Item item = addTodoUseCase.addItem(todo);
+            Item item = addTodoUseCase.addItem(UserSession.currentUserId(), todo);
             System.out.printf("%s. %s%n", item.getId(), item.getTodo());
             System.out.printf("Item <%s> added%n", item.getId());
         }
