@@ -1,8 +1,8 @@
 package todo.domain.item;
 
 public class ItemNotFoundException extends RuntimeException {
-    public ItemNotFoundException(int itemId) {
-        this(String.format("Item with id <%s> not found", itemId));
+    public ItemNotFoundException(int userId, int itemId) {
+        this(String.format("Item not found: userId=[%s], itemId=[%s]", userId, itemId));
     }
 
     private ItemNotFoundException(String message) {

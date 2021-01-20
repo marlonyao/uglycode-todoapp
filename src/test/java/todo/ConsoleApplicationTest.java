@@ -40,9 +40,13 @@ public class ConsoleApplicationTest {
 
     @Nested
     public class SingleUser {
+
+        private int userId;
+
         @BeforeEach
         void setUp() {
-            UserSession.changeCurrentUserId(111);
+            userId = 111;
+            UserSession.changeCurrentUserId(userId);
         }
 
         @AfterEach
@@ -61,7 +65,7 @@ public class ConsoleApplicationTest {
 
             // 2. mark todo as done
             assertInteract("todo done 1\n", "item <1> done.\n");
-            assertThat(ConsoleApplication.getItemRepository().findById(1).isDone()).isTrue();
+            assertThat(ConsoleApplication.getItemRepository().findByUserIdAndSeq(userId, 1).isDone()).isTrue();
 
             // 3. view undone todos
             assertInteract("todo list\n", "2. <item2>\nTotal: 1 items\n");

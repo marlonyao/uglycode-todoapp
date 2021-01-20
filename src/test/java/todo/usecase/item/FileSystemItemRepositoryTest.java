@@ -36,41 +36,50 @@ public class FileSystemItemRepositoryTest {
 
     @Test
     public void add() throws IOException {
-        repository.add(new Item(1, "<item1>"));
-        repository.add(new Item(2, "<item2>"));
+        repository.add(new Item(1, 111, "<item1>"));
+        repository.add(new Item(1, 222, "<item2>"));
 
         List<String> content = Files.readLines(dbfile.toFile(), Charsets.UTF_8);
         assertThat(content)
                 .hasSize(2)
-                .contains("1,false,<item1>")
-                .contains("2,false,<item2>");
+                .contains("111,1,false,<item1>")
+                .contains("222,1,false,<item2>");
     }
 
     @Test
     public void update() throws IOException {
-        repository.add(new Item(1, "<item1>"));
-        repository.add(new Item(1, "<item11>"));
+        repository.add(new Item(1, 111, "<item1>"));
+        repository.add(new Item(1, 111, "<item11>"));
         List<String> content = Files.readLines(dbfile.toFile(), Charsets.UTF_8);
         assertThat(content)
                 .hasSize(1)
-                .contains("1,false,<item11>");
+                .contains("111,1,false,<item11>");
     }
 
     @Test
     public void find() throws IOException {
         try (BufferedWriter writer = Files.newWriter(dbfile.toFile(), Charsets.UTF_8)) {
-            writer.write("1,false,<item1>\n");
-            writer.write("2,true,<item2>\n");
+            writer.write("111,1,false,<item1>\n");
+            writer.write("222,1,false,<item21>\n");
+            writer.write("222,2,true,<item22>\n");
         }
         repository = new FileSystemItemRepository(dbfile);
 
-        assertThat(repository.findAll()).isEqualTo(ImmutableList.of(
-                new Item(1, "<item1>"),
-                new Item(2, "<item2>", true)
+        assertThat(repository.findByUserId(111)).isEqualTo(ImmutableList.of(
+                new Item(1,111, "<item1>")
         ));
-        assertThat(repository.count()).isEqualTo(2);
-        assertThat(repository.findUndone()).isEqualTo(ImmutableList.of(
-                new Item(1, "<item1>")));
-        assertThat(repository.findById(1)).isEqualTo(new Item(1, "<item1>"));
+
+        assertThat(repository.findByUserId(222)).isEqualTo(ImmutableList.of(
+                new Item(1, 222, "<item21>"),
+                new Item(2, 222, "<item22>", true)
+        ));
+        assertThat(repository.countByUserId(222)).isEqualTo(2);
+        assertThat(repository.findByUserIdAndSeq(222, 1)).isEqualTo(
+                new Item(1, 222, "<item21>")
+        );
+
+        assertThat(repository.findByUserIdAndUndone(222)).isEqualTo(ImmutableList.of(
+                new Item(1, 222, "<item21>")
+        ));
     }
 }

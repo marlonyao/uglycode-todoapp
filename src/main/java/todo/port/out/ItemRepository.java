@@ -20,8 +20,5 @@ public interface ItemRepository {
 
     int countByUserId(int userId);
 
-    Item findById(int itemId) throws ItemNotFoundException;
-
     Item findByUserIdAndSeq(int userId, int todoId);
-
 }

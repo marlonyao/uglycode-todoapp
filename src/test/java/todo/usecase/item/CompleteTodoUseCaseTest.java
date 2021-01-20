@@ -36,14 +36,14 @@ public class CompleteTodoUseCaseTest {
         public void itemExists() {
             itemRepository.add(createItem(1, "<item1>"));
             todoUseCase.complete(userId, 1);
-            assertThat(itemRepository.findById(1).isDone()).isEqualTo(true);
+            assertThat(itemRepository.findByUserIdAndSeq(userId, 1).isDone()).isEqualTo(true);
         }
 
         @Test
         public void itemNotExists() {
             assertThatThrownBy(() -> todoUseCase.complete(userId, 1))
                     .isInstanceOf(ItemNotFoundException.class)
-                    .hasMessage("Item with id <1> not found");
+                    .hasMessage("Item not found: userId=[111], itemId=[1]");
         }
 
         private Item createItem(int itemId, String todo) {

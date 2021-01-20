@@ -46,8 +46,8 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     private Item parseItem(String line) {
-        String[] parts = line.split(",", 3);
-        return new Item(parseInt(parts[0]), parts[2], parseBoolean(parts[1]));
+        String[] parts = line.split(",", 4);
+        return new Item(parseInt(parts[1]), parseInt(parts[0]), parts[3], parseBoolean(parts[2]));
     }
 
     @Override
@@ -57,13 +57,12 @@ public class FileSystemItemRepository implements ItemRepository {
 
     @Override
     public List<Item> findByUserId(int userId) {
-        return null;
+        return memoryItems.findByUserId(userId);
     }
 
     @Override
     public List<Item> findByUserIdAndUndone(int userId) {
-        // TODO: 2021/1/21
-        return null;
+        return memoryItems.findByUserIdAndUndone(userId);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     private String formatItem(Item item) {
-        return String.format("%s,%s,%s", item.getId(), item.isDone(), item.getTodo());
+        return String.format("%s,%s,%s,%s", item.getUserId(), item.getId(), item.isDone(), item.getTodo());
     }
 
     @Override
@@ -93,18 +92,11 @@ public class FileSystemItemRepository implements ItemRepository {
 
     @Override
     public int countByUserId(int userId) {
-        // TODO: 2021/1/21  
-        return 0;
-    }
-
-    @Override
-    public Item findById(int itemId) throws ItemNotFoundException {
-        return memoryItems.findById(itemId);
+        return memoryItems.countByUserId(userId);
     }
 
     @Override
     public Item findByUserIdAndSeq(int userId, int todoId) {
-        // TODO: 2021/1/21  
-        return null;
+        return memoryItems.findByUserIdAndSeq(userId, todoId);
     }
 }
