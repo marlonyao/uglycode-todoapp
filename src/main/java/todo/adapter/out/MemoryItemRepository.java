@@ -25,19 +25,14 @@ public class MemoryItemRepository implements ItemRepository {
         items.set(itemIndex, item.copy());
     }
 
-    private int findIndex(int userId, int itemId) {
+    private int findIndex(int userId, int itemSeq) {
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
-            if (item.getUserId() == userId && item.getSeq() == itemId) {
+            if (item.getUserId() == userId && item.getSeq() == itemSeq) {
                 return i;
             }
         }
         return -1;
-    }
-
-    @Override
-    public int count() {
-        return items.size();
     }
 
     @Override
@@ -52,17 +47,6 @@ public class MemoryItemRepository implements ItemRepository {
             throw new ItemNotFoundException(userId, todoSeq);
         }
         return items.get(itemIndex).copy();
-    }
-
-    @Override
-    public List<Item> findUndone() {
-        List<Item> result = new ArrayList<>();
-        for (Item item : items) {
-            if (!item.isDone()) {
-                result.add(item.copy());
-            }
-        }
-        return result;
     }
 
     @Override

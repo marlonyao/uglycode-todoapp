@@ -50,11 +50,6 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     @Override
-    public List<Item> findUndone() {
-        return memoryItems.findUndone();
-    }
-
-    @Override
     public List<Item> findByUserId(int userId) {
         return memoryItems.findByUserId(userId);
     }
@@ -82,11 +77,6 @@ public class FileSystemItemRepository implements ItemRepository {
 
     private String formatItem(Item item) {
         return String.format("%s,%s,%s,%s", item.getUserId(), item.getSeq(), item.isDone(), item.getTodo());
-    }
-
-    @Override
-    public int count() {
-        return memoryItems.count();
     }
 
     @Override

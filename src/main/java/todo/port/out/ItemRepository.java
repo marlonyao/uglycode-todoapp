@@ -8,17 +8,14 @@ import java.util.List;
 public interface ItemRepository {
     List<Item> findAll();
 
-    List<Item> findUndone();
-
     List<Item> findByUserId(int userId);
 
     List<Item> findByUserIdAndUndone(int userId);
 
-    void add(Item item);
+    Item findByUserIdAndSeq(int userId, int todoSeq);
 
-    int count();
+    void add(Item item);
 
     int countByUserId(int userId);
 
-    Item findByUserIdAndSeq(int userId, int todoSeq);
 }
