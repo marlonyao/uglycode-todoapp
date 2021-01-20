@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
 import todo.application.AddTodoUseCaseImpl;
 import todo.domain.item.Item;
+import todo.domain.login.UserSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,6 +31,21 @@ public class AddTodoUseCaseTest {
         assertThat(itemRepository.findAll()).isEqualTo(ImmutableList.of(
                 new Item(1, "<item1>"),
                 new Item(2, "<item2>")
+        ));
+    }
+    
+    @Test
+    public void shouldNotSeeTodoOfOtherUser() {
+        UserSession.changeCurrentUserId(111);
+        addTodoUseCase.addItem("<item111>");
+        assertThat(itemRepository.findByUserId(111)).isEqualTo(ImmutableList.of(
+                new Item(1, 111, "<item111>")
+        ));
+
+        UserSession.changeCurrentUserId(222);
+        addTodoUseCase.addItem("<item222>");
+        assertThat(itemRepository.findByUserId(222)).isEqualTo(ImmutableList.of(
+                new Item(1, 222, "<item222>")
         ));
     }
 }

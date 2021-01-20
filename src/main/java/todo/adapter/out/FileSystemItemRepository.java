@@ -56,6 +56,11 @@ public class FileSystemItemRepository implements ItemRepository {
     }
 
     @Override
+    public List<Item> findByUserId(int userId) {
+        return null;
+    }
+
+    @Override
     public void add(Item item) {
         memoryItems.add(item);
         persist();

@@ -10,9 +10,12 @@ public interface ItemRepository {
 
     List<Item> findUndone();
 
+    List<Item> findByUserId(int userId);
+
     void add(Item item);
 
     int count();
 
     Item findById(int itemId) throws ItemNotFoundException;
+
 }

@@ -58,4 +58,15 @@ public class MemoryItemRepository implements ItemRepository {
         }
         return result;
     }
+
+    @Override
+    public List<Item> findByUserId(int userId) {
+        List<Item> result = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getUserId() == userId) {
+                result.add(item.copy());
+            }
+        }
+        return result;
+    }
 }

@@ -16,6 +16,6 @@ public class LogoutUserUseCaseTestCase {
         UserSession.login(user);
         boolean result = useCase.logout();
         assertThat(result).isTrue();
-        assertThat(UserSession.currentUserId()).isLessThanOrEqualTo(0);
+        assertThat(UserSession.isLogin()).isFalse();
     }
 }
