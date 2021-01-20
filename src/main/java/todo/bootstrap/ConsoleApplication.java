@@ -122,7 +122,7 @@ public class ConsoleApplication {
 
         @Override
         void execute() {
-            List<Item> items = listTodoUseCase.list(withAll);
+            List<Item> items = listTodoUseCase.list(UserSession.currentUserId(), withAll);
             for (Item item : items) {
                 System.out.println(formatItem(item));
             }

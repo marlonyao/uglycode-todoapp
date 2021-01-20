@@ -14,10 +14,10 @@ public class ListTodoUseCaseImpl implements ListTodoUseCase {
     }
 
     @Override
-    public List<Item> list(boolean withAll) {
+    public List<Item> list(int userId, boolean withAll) {
         if (withAll) {
-            return itemRepository.findAll();
+            return itemRepository.findByUserId(userId);
         }
-        return itemRepository.findUndone();
+        return itemRepository.findByUserIdAndUndone(userId);
     }
 }

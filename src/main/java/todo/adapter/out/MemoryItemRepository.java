@@ -87,6 +87,17 @@ public class MemoryItemRepository implements ItemRepository {
     }
 
     @Override
+    public List<Item> findByUserIdAndUndone(int userId) {
+        List<Item> result = new ArrayList<>();
+        for (Item item : items) {
+            if (item.getUserId() == userId && !item.isDone()) {
+                result.add(item.copy());
+            }
+        }
+        return result;
+    }
+
+    @Override
     public List<Item> findByUserId(int userId) {
         List<Item> result = new ArrayList<>();
         for (Item item : items) {
@@ -96,4 +107,5 @@ public class MemoryItemRepository implements ItemRepository {
         }
         return result;
     }
+
 }

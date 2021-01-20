@@ -12,6 +12,8 @@ public interface ItemRepository {
 
     List<Item> findByUserId(int userId);
 
+    List<Item> findByUserIdAndUndone(int userId);
+
     void add(Item item);
 
     int count();
@@ -21,4 +23,5 @@ public interface ItemRepository {
     Item findById(int itemId) throws ItemNotFoundException;
 
     Item findByUserIdAndSeq(int userId, int todoId);
+
 }

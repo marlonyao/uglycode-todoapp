@@ -19,23 +19,24 @@ public class ListTodoUseCaseTest {
     @BeforeEach
     void setUp() {
         itemRepository = new MemoryItemRepository();
-        itemRepository.add(new Item(1, "<item1>"));
-        itemRepository.add(new Item(2, "<item2>", true));
+        itemRepository.add(new Item(1, 111, "<item1>"));
+        itemRepository.add(new Item(2, 111, "<item2>", true));
+        itemRepository.add(new Item(1, 222, "<item22>"));
         todoUseCase = new ListTodoUseCaseImpl(itemRepository);
     }
 
     @Test
     public void defaultListUndoneTodos() {
-        List<Item> todos = todoUseCase.list(false);
-        assertThat(todos).isEqualTo(ImmutableList.of(new Item(1, "<item1>")));
+        List<Item> todos = todoUseCase.list(111, false);
+        assertThat(todos).isEqualTo(ImmutableList.of(new Item(1, 111, "<item1>")));
     }
 
     @Test
     public void listAllTodos() {
-        List<Item> todos = todoUseCase.list(true);
+        List<Item> todos = todoUseCase.list(111, true);
         assertThat(todos).isEqualTo(ImmutableList.of(
-                new Item(1, "<item1>"),
-                new Item(2, "<item2>", true)
+                new Item(1, 111, "<item1>"),
+                new Item(2, 111, "<item2>", true)
         ));
     }
 }
