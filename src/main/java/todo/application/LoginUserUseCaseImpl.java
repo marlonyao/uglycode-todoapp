@@ -1,6 +1,6 @@
 package todo.application;
 
-import todo.domain.login.LoginSession;
+import todo.domain.login.UserSession;
 import todo.domain.login.User;
 import todo.domain.login.UserLoginException;
 import todo.domain.login.UserNotFoundException;
@@ -18,7 +18,7 @@ public class LoginUserUseCaseImpl implements LoginUserUseCase {
     public int login(String username, String password) {
         User user = findUser(username);
         user.authenticate(password);
-        LoginSession.switchTo(user);
+        UserSession.login(user);
         return user.getId();
     }
 

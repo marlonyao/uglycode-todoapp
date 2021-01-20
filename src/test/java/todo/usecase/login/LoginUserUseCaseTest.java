@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryUserRepository;
 import todo.application.LoginUserUseCaseImpl;
-import todo.domain.login.LoginSession;
+import todo.domain.login.UserSession;
 import todo.domain.login.User;
 import todo.domain.login.UserLoginException;
 
@@ -26,7 +26,7 @@ public class LoginUserUseCaseTest {
     public void loginSuccess() {
         int userId = useCase.login("testuser", "testpass");
         assertThat(userId).isEqualTo(111);
-        assertThat(LoginSession.currentUserId()).isEqualTo(111);
+        assertThat(UserSession.currentUserId()).isEqualTo(111);
     }
 
     @Test
@@ -43,10 +43,4 @@ public class LoginUserUseCaseTest {
                 .hasMessage("User [wronguser] not exists");
     }
 
-//    @Test
-//    public void logout() {
-//        useCase.login("testuser", "testpass");
-//        boolean result = useCase.logout("testuser");
-//        assertThat(result).isTrue();
-//    }
 }
