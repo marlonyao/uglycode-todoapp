@@ -1,5 +1,5 @@
 package todo.port.in;
 
-public interface LogoutUserUseCase {
+public interface LogoutUseCase {
     boolean logout();
 }

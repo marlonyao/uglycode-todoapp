@@ -1,18 +1,18 @@
 package todo.usecase.login;
 
 import org.junit.jupiter.api.Test;
-import todo.application.LogoutUserUseCaseImpl;
+import todo.application.LogoutUseCaseImpl;
 import todo.domain.login.UserSession;
 import todo.domain.login.User;
-import todo.port.in.LogoutUserUseCase;
+import todo.port.in.LogoutUseCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LogoutUserUseCaseTestCase {
+public class LogoutUseCaseTestCase {
     @Test
     public void logout() {
         User user = new User(111, "testuser", "testpass");
-        LogoutUserUseCase useCase = new LogoutUserUseCaseImpl();
+        LogoutUseCase useCase = new LogoutUseCaseImpl();
         UserSession.login(user);
         boolean result = useCase.logout();
         assertThat(result).isTrue();

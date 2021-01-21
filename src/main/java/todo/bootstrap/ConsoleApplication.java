@@ -2,15 +2,14 @@ package todo.bootstrap;
 
 import com.google.common.annotations.VisibleForTesting;
 import todo.adapter.out.FileSystemItemRepository;
-import todo.application.AddTodoUseCaseImpl;
-import todo.application.CompleteTodoUseCaseImpl;
-import todo.application.ListTodoUseCaseImpl;
+import todo.adapter.out.FileSystemUserRepository;
+import todo.adapter.out.MemoryUserRepository;
+import todo.application.*;
 import todo.domain.item.Item;
 import todo.domain.login.UserSession;
-import todo.port.in.AddTodoUseCase;
-import todo.port.in.CompleteTodoUseCase;
-import todo.port.in.ListTodoUseCase;
+import todo.port.in.*;
 import todo.port.out.ItemRepository;
+import todo.port.out.UserRepository;
 
 import java.io.File;
 import java.util.List;
@@ -21,10 +20,17 @@ public class ConsoleApplication {
     private static AddTodoUseCase addTodoUseCase;
     private static CompleteTodoUseCase completeTodoUseCase;
     private static ListTodoUseCase listTodoUseCase;
+    private static LoginUseCase loginUseCase;
+    private static LogoutUseCase logoutUseCase;
+    private static UserRepository userRepository;
 
     public static void main(String[] args) {
-        assembleApplication();
-        processCommands();
+        try {
+            assembleApplication();
+            processCommands();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void processCommands() {
@@ -51,16 +57,32 @@ public class ConsoleApplication {
         ConsoleApplication.itemRepository = itemRepository;
     }
 
+    @VisibleForTesting
+    public static void initUserRepository(MemoryUserRepository userRepository) {
+        ConsoleApplication.userRepository = userRepository;
+    }
+
     private static void assembleApplication() {
         if (itemRepository == null) {
             itemRepository = new FileSystemItemRepository(new File("todo.txt"));
         }
+        if (userRepository == null) {
+            userRepository = new FileSystemUserRepository(new File(System.getProperty("user.home"), ".todo-config"));
+        }
         addTodoUseCase = new AddTodoUseCaseImpl(itemRepository);
         completeTodoUseCase = new CompleteTodoUseCaseImpl(itemRepository);
         listTodoUseCase = new ListTodoUseCaseImpl(itemRepository);
+        loginUseCase = new LoginUseCaseImpl(userRepository);
+        logoutUseCase = new LogoutUseCaseImpl();
     }
 
     private static Command parseCommand(String line) {
+        if (line.startsWith("todo login -u ")) {
+            return new LoginCommand(line.substring("todo login -u ".length()).trim());
+        }
+        if (line.trim().equals("todo logout")) {
+            return new LogoutCommand();
+        }
         if (line.startsWith("todo add ")) {
             return new AddCommand(line.substring("todo add ".length()).trim());
         }
@@ -80,8 +102,21 @@ public class ConsoleApplication {
         return itemRepository;
     }
 
+
     static abstract class Command {
-        abstract void execute();
+        public void execute() {
+            if (needLogin() && !UserSession.isLogin()) {
+                System.err.println("Should login first!");
+                return;
+            }
+            realExecute();
+        }
+
+        protected abstract void realExecute();
+
+        protected boolean needLogin() {
+            return true;
+        }
     }
 
     static class AddCommand extends Command {
@@ -92,7 +127,7 @@ public class ConsoleApplication {
         }
 
         @Override
-        void execute() {
+        protected void realExecute() {
             Item item = addTodoUseCase.addItem(UserSession.currentUserId(), todo);
             System.out.printf("%s. %s%n", item.getSeq(), item.getTodo());
             System.out.printf("Item <%s> added%n", item.getSeq());
@@ -107,7 +142,7 @@ public class ConsoleApplication {
         }
 
         @Override
-        void execute() {
+        protected void realExecute() {
             completeTodoUseCase.complete(UserSession.currentUserId(), itemSeq);
             System.out.printf("item <%s> done.%n", itemSeq);
         }
@@ -121,7 +156,7 @@ public class ConsoleApplication {
         }
 
         @Override
-        void execute() {
+        protected void realExecute() {
             List<Item> items = listTodoUseCase.list(UserSession.currentUserId(), withAll);
             for (Item item : items) {
                 System.out.println(formatItem(item));
@@ -132,6 +167,43 @@ public class ConsoleApplication {
         private String formatItem(Item item) {
             String done = item.isDone() ? "[Done] " : "";
             return item.getSeq() + ". " + done + item.getTodo();
+        }
+    }
+
+    private static class LoginCommand extends Command {
+        private String user;
+
+        public LoginCommand(String user) {
+            super();
+            this.user = user;
+        }
+
+        @Override
+        protected void realExecute() {
+            System.out.print("Password:");
+            System.out.flush();
+            Scanner scanner = new Scanner(System.in);
+            String password = scanner.nextLine();
+            loginUseCase.login(user, password);
+            System.out.println("Login Success!");
+        }
+
+        @Override
+        protected boolean needLogin() {
+            return false;
+        }
+    }
+
+    private static class LogoutCommand extends Command {
+        @Override
+        protected void realExecute() {
+            logoutUseCase.logout();
+            System.out.println("Logout Success!");
+        }
+
+        @Override
+        protected boolean needLogin() {
+            return false;
         }
     }
 }

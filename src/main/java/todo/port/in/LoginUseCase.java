@@ -1,5 +1,5 @@
 package todo.port.in;
 
-public interface LoginUserUseCase {
+public interface LoginUseCase {
     int login(String username, String password);
 }

@@ -3,12 +3,12 @@ package todo;
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryItemRepository;
+import todo.adapter.out.MemoryUserRepository;
 import todo.bootstrap.ConsoleApplication;
 import todo.domain.item.Item;
-import todo.domain.login.UserSession;
+import todo.domain.login.User;
 
 import java.io.*;
 
@@ -25,6 +25,7 @@ public class ConsoleApplicationTest {
     private PrintStream originStdout;
     private PrintStream originStderr;
     private Thread todoThread;
+    private int userId;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -38,44 +39,40 @@ public class ConsoleApplicationTest {
         stopTodoApp();
     }
 
-    @Nested
-    public class SingleUser {
 
-        private int userId;
+    @Test
+    public void todoApp() throws Exception {
+        // 0. login
+        assertInteract("todo login -u testuser\n", "Password:");
+        assertInteract("testpass\n", "Login Success!\n");
 
-        @BeforeEach
-        void setUp() {
-            userId = 111;
-            UserSession.changeCurrentUserId(userId);
-        }
+        // 1. add todo
+        assertInteract("todo add <item>\n", "1. <item>\nItem <1> added\n");
+        assertThat(ConsoleApplication.getItemRepository().findAll()).isEqualTo(ImmutableList.of(
+                new Item(userId, 1, "<item>")
+        ));
+        assertInteract("todo add <item2>\n", "2. <item2>\nItem <2> added\n");
 
-        @AfterEach
-        void tearDown() {
-            UserSession.logout();
-        }
+        // 2. mark todo as done
+        assertInteract("todo done 1\n", "item <1> done.\n");
+        assertThat(ConsoleApplication.getItemRepository().findByUserIdAndSeq(userId, 1).isDone()).isTrue();
 
-        @Test
-        public void todoApp() throws Exception {
-            // 1. add todo
-            assertInteract("todo add <item>\n", "1. <item>\nItem <1> added\n");
-            assertThat(ConsoleApplication.getItemRepository().findAll()).isEqualTo(ImmutableList.of(
-                    new Item(UserSession.currentUserId(), 1, "<item>")
-            ));
-            assertInteract("todo add <item2>\n", "2. <item2>\nItem <2> added\n");
+        // 3. view undone todos
+        assertInteract("todo list\n", "2. <item2>\nTotal: 1 items\n");
 
-            // 2. mark todo as done
-            assertInteract("todo done 1\n", "item <1> done.\n");
-            assertThat(ConsoleApplication.getItemRepository().findByUserIdAndSeq(userId, 1).isDone()).isTrue();
+        // 4. view all todos
+        assertInteract("todo list --all\n", "1. [Done] <item>\n2. <item2>\nTotal: 2 items\n");
 
-            // 3. view undone todos
-            assertInteract("todo list\n", "2. <item2>\nTotal: 1 items\n");
+        assertInteract("foobar\n", "", "Unknown command [foobar]\n");
+        
+        // 5. logout
+        assertInteract("todo logout\n", "Logout Success!\n");
 
-            // 4. view all todos
-            assertInteract("todo list --all\n", "1. [Done] <item>\n2. <item2>\nTotal: 2 items\n");
-
-            assertInteract("foobar\n", "", "Unknown command [foobar]\n");
-        }
-
+        // 6. operate again
+        assertInteract("todo list\n", "", "Should login first!\n");
+        assertInteract("todo list --all\n", "", "Should login first!\n");
+        assertInteract("todo add foo\n", "", "Should login first!\n");
+        assertInteract("todo done 1\n", "", "Should login first!\n");
     }
 
     private void assertInteract(String input, String output) throws IOException, InterruptedException {
@@ -124,6 +121,10 @@ public class ConsoleApplicationTest {
 
     private void startTodoApp() {
         ConsoleApplication.initItemRepository(new MemoryItemRepository());
+        MemoryUserRepository userRepository = new MemoryUserRepository();
+        userId = 222;
+        userRepository.add(new User(userId, "testuser", "testpass"));
+        ConsoleApplication.initUserRepository(userRepository);
         Thread thread = new Thread(() -> ConsoleApplication.main(new String[0]));
         thread.start();
         todoThread = thread;

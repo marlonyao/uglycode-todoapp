@@ -1,9 +1,10 @@
 package todo.usecase.login;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryUserRepository;
-import todo.application.LoginUserUseCaseImpl;
+import todo.application.LoginUseCaseImpl;
 import todo.domain.login.UserSession;
 import todo.domain.login.User;
 import todo.domain.login.UserLoginException;
@@ -11,15 +12,20 @@ import todo.domain.login.UserLoginException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class LoginUserUseCaseTest {
+public class LoginUseCaseTest {
     private MemoryUserRepository userRepository;
-    private LoginUserUseCaseImpl useCase;
+    private LoginUseCaseImpl useCase;
 
     @BeforeEach
     void setUp() {
         userRepository = new MemoryUserRepository();
         userRepository.add(new User(111, "testuser", "testpass"));
-        useCase = new LoginUserUseCaseImpl(userRepository);
+        useCase = new LoginUseCaseImpl(userRepository);
+    }
+
+    @AfterEach
+    void tearDown() {
+        UserSession.logout();
     }
 
     @Test

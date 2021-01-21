@@ -1,6 +1,8 @@
 package todo.adapter.out;
 
+import todo.domain.RepositoryException;
 import todo.domain.login.User;
+import todo.domain.login.UserNotFoundException;
 import todo.port.out.UserRepository;
 import utils.FileUtils;
 
@@ -13,10 +15,14 @@ import java.util.function.Predicate;
 public class FileSystemUserRepository implements UserRepository {
     List<User> users = new ArrayList<>();
 
-    public FileSystemUserRepository(File userFile) throws IOException {
-        List<String> lines = FileUtils.readLines(userFile);
-        for (String line : lines) {
-            users.add(parseUser(line));
+    public FileSystemUserRepository(File userFile) {
+        try {
+            List<String> lines = FileUtils.readLines(userFile);
+            for (String line : lines) {
+                users.add(parseUser(line));
+            }
+        } catch (IOException e) {
+            throw new RepositoryException(e);
         }
     }
 
@@ -31,7 +37,7 @@ public class FileSystemUserRepository implements UserRepository {
         return users.stream()
                 .filter(byName(username))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new UserNotFoundException(String.format("User [%s] not found", username)));
     }
 
     private Predicate<User> byName(String username) {
