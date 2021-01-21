@@ -6,6 +6,7 @@ import todo.adapter.out.FileSystemUserRepository;
 import todo.adapter.out.MemoryUserRepository;
 import todo.application.*;
 import todo.domain.item.Item;
+import todo.domain.login.User;
 import todo.domain.login.UserSession;
 import todo.port.in.*;
 import todo.port.out.ItemRepository;
@@ -21,7 +22,6 @@ public class ConsoleApplication {
     private static CompleteTodoUseCase completeTodoUseCase;
     private static ListTodoUseCase listTodoUseCase;
     private static LoginUseCase loginUseCase;
-    private static LogoutUseCase logoutUseCase;
     private static UserRepository userRepository;
 
     public static void main(String[] args) {
@@ -73,7 +73,6 @@ public class ConsoleApplication {
         completeTodoUseCase = new CompleteTodoUseCaseImpl(itemRepository);
         listTodoUseCase = new ListTodoUseCaseImpl(itemRepository);
         loginUseCase = new LoginUseCaseImpl(userRepository);
-        logoutUseCase = new LogoutUseCaseImpl();
     }
 
     private static Command parseCommand(String line) {
@@ -171,11 +170,10 @@ public class ConsoleApplication {
     }
 
     private static class LoginCommand extends Command {
-        private String user;
+        private String username;
 
         public LoginCommand(String user) {
-            super();
-            this.user = user;
+            this.username = user;
         }
 
         @Override
@@ -184,7 +182,8 @@ public class ConsoleApplication {
             System.out.flush();
             Scanner scanner = new Scanner(System.in);
             String password = scanner.nextLine();
-            loginUseCase.login(user, password);
+            User user = loginUseCase.login(username, password);
+            UserSession.login(user);
             System.out.println("Login Success!");
         }
 
@@ -197,7 +196,7 @@ public class ConsoleApplication {
     private static class LogoutCommand extends Command {
         @Override
         protected void realExecute() {
-            logoutUseCase.logout();
+            UserSession.logout();
             System.out.println("Logout Success!");
         }
 

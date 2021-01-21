@@ -15,11 +15,10 @@ public class LoginUseCaseImpl implements LoginUseCase {
     }
 
     @Override
-    public int login(String username, String password) {
+    public User login(String username, String password) {
         User user = findUser(username);
         user.authenticate(password);
-        UserSession.login(user);
-        return user.getId();
+        return user;
     }
 
     private User findUser(String username) {

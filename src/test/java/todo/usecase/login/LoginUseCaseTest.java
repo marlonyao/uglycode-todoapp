@@ -1,11 +1,9 @@
 package todo.usecase.login;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import todo.adapter.out.MemoryUserRepository;
 import todo.application.LoginUseCaseImpl;
-import todo.domain.login.UserSession;
 import todo.domain.login.User;
 import todo.domain.login.UserLoginException;
 
@@ -23,16 +21,10 @@ public class LoginUseCaseTest {
         useCase = new LoginUseCaseImpl(userRepository);
     }
 
-    @AfterEach
-    void tearDown() {
-        UserSession.logout();
-    }
-
     @Test
     public void loginSuccess() {
-        int userId = useCase.login("testuser", "testpass");
-        assertThat(userId).isEqualTo(111);
-        assertThat(UserSession.currentUserId()).isEqualTo(111);
+        User user = useCase.login("testuser", "testpass");
+        assertThat(user.getId()).isEqualTo(111);
     }
 
     @Test
