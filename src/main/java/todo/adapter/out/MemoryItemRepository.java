@@ -10,7 +10,6 @@ import java.util.List;
 public class MemoryItemRepository implements ItemRepository {
     private List<Item> items = new ArrayList<>();
 
-    @Override
     public List<Item> findAll() {
         return items;
     }

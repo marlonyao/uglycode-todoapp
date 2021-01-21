@@ -32,11 +32,6 @@ public class FileSystemItemRepository implements ItemRepository {
         this(dbFile.toFile());
     }
 
-    @Override
-    public List<Item> findAll() {
-        return memoryItems.findAll();
-    }
-
     private void doLoad() throws IOException {
         if (!dbFile.exists()) {
             return;

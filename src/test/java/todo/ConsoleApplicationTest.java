@@ -48,7 +48,7 @@ public class ConsoleApplicationTest {
 
         // 1. add todo
         assertInteract("todo add <item>\n", "1. <item>\nItem <1> added\n");
-        assertThat(ConsoleApplication.getItemRepository().findAll()).isEqualTo(ImmutableList.of(
+        assertThat(ConsoleApplication.getItemRepository().findByUserId(userId)).isEqualTo(ImmutableList.of(
                 new Item(userId, 1, "<item>")
         ));
         assertInteract("todo add <item2>\n", "2. <item2>\nItem <2> added\n");
