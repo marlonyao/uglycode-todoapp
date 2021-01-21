@@ -1,4 +1,4 @@
-package todo.usecase.item;
+package todo.adapter.out;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import todo.adapter.out.FileSystemItemRepository;
 import todo.domain.item.Item;
 
 import java.io.BufferedWriter;
