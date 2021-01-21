@@ -1,5 +1,10 @@
 package todo.domain.login;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode
 public class User {
     private final int userId;
     private final String username;
